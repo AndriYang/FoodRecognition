@@ -260,8 +260,11 @@ if __name__ == '__main__':
     images_dir = Path('./food/images')
     annotation_dir = Path('./food/annotations')
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-#    device = 'cpu'
-    epochs =2
+    # device = 'cpu'
+    epochs = 15
+    test_size = 0.2
+    random_state = 42
+    lr = 0.001
     init_folder = './results'
     
     resize_folder =  'food/images_resized'
@@ -306,18 +309,18 @@ if __name__ == '__main__':
     X = df_train[['new_dir', 'new_bounding_box']]
     Y = df_train['class']
     
-    X_train, X_val, y_train, y_val = train_test_split(X, Y, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(X, Y, test_size = test_size, random_state = random_state)
     
     train_ds = FoodDataset(X_train['new_dir'],X_train['new_bounding_box'] ,y_train, transforms=True)
     valid_ds = FoodDataset(X_val['new_dir'],X_val['new_bounding_box'],y_val)
     
-    batch_size = 64
+    
     train_dl = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
     valid_dl = DataLoader(valid_ds, batch_size=batch_size)
     
     model = bounding_box_model().to(device)
     parameters = filter(lambda p: p.requires_grad, model.parameters())
-    optimizer = torch.optim.Adam(parameters, lr=0.001)
+    optimizer = torch.optim.Adam(parameters, lr=lr)
 
     train_losses, v_losses = train_epocs(model, optimizer, train_dl, valid_dl, epochs)  
     

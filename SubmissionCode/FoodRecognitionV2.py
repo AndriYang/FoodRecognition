@@ -146,17 +146,6 @@ def transformsXY(path, bb, transforms):
         x, Y = center_crop(x), center_crop(Y)
     return x, mask_to_bb(Y)
 
-def create_corner_rect(bb, color='red'):
-    print(bb)
-    bb = np.array(bb, dtype=np.float32)
-    print(bb)
-    return plt.Rectangle((bb[1], bb[0]), bb[3]-bb[1], bb[2]-bb[0], color=color,
-                         fill=False, lw=3)
-
-def show_corner_bb(im, bb):
-    plt.imshow(im)
-    plt.gca().add_patch(create_corner_rect(bb))
-
 def normalize(im):
     """Normalizes images with Imagenet stats."""
     imagenet_stats = np.array([[0.485, 0.456, 0.406], [0.229, 0.224, 0.225]])
@@ -325,24 +314,6 @@ if __name__ == '__main__':
     df_train['new_path'] = new_paths
     df_train['new_bb'] = new_bbs
     
-#    im = cv2.imread(str(df_train.values[58][0]))
-#    bb = create_bb_array(df_train.values[58])
-#    print(im.shape)
-#    
-#    Y = create_mask(bb, im)
-#    mask_to_bb(Y)   
-#    
-#    #original
-#    im = cv2.imread(str(df_train.values[68][8]))
-#    im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-#    show_corner_bb(im, df_train.values[68][9])
-#    
-#    # after transformation
-#    im, bb = transformsXY(str(df_train.values[68][8]),df_train.values[68][9],True )
-#    show_corner_bb(im, bb)
-    
-#    df_train = df_train.reset_index()
-    
     X = df_train[['new_path', 'new_bb']]
     Y = df_train['class']
     
@@ -360,8 +331,5 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(parameters, lr=0.006)
 
     train_losses, v_losses = train_epocs(model, optimizer, train_dl, valid_dl, epochs)  
-    
-    # update_optimizer(optimizer, 0.001)
-    # train_epocs(model, optimizer, train_dl, valid_dl, epochs=10)
     
     plot_loss_graph(epochs, train_losses, v_losses, init_folder)

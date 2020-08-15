@@ -290,6 +290,12 @@ if __name__ == '__main__':
     resize_folder =  'road_signs/images_resized'
     signs_test_folder = 'road_signs/road_signs_test'
     
+    if not os.path.exists(init_folder):
+        os.makedirs(init_folder)
+    else:
+        shutil.rmtree(init_folder)
+        os.makedirs(init_folder) 
+
     if not os.path.exists(resize_folder):
         os.makedirs(resize_folder)
     else:

@@ -69,10 +69,12 @@ def get_img_shape(path):
         return (None, None, None)
 
 if __name__ == '__main__':
-    images_dir = Path('./data/images')
-    annotation_dir = Path('./data/annotations')
+    img_path = 'data/custom/images/'
+    anno_path = 'data/custom/annotations/'
+    images_dir = Path(f'./{img_path}')
+    annotation_dir = Path(f'./{anno_path}')
     perc = 70 # Percentage of training data for train dataset
-    labels_dir = 'data/custom/labels'
+    labels_dir = 'data/custom/labels/'
     if not os.path.exists(labels_dir):
         os.makedirs(labels_dir)
 
@@ -85,21 +87,21 @@ if __name__ == '__main__':
 
     # Generate annotations for each image in darknet format
     for i in range(len(df_yolo)):
-        file_name = str(df_yolo['filename'][i]).replace(str(images_dir), '').replace('.jpg', '')
+        file_name = str(df_yolo['filename'][i]).replace(img_path, '').replace('.jpg', '')
         annotation = f"{df_yolo['class'][i]} {df_yolo['x'][i]} {df_yolo['y'][i]} {df_yolo['w'][i]} {df_yolo['h'][i]}"
-        text_file = open(f"data/labels/{file_name}.txt", "w")
+        text_file = open(f"{labels_dir}{file_name}.txt", "w")
         n = text_file.write(annotation)
         text_file.close()
 
     # Generate class.names file
-    names_file = open("data/class.names", "w")
+    names_file = open("data/custom/class.names", "w")
     for x in list(class_dict.keys()):
         n = names_file.write(f"{x}\n")
     names_file.close()
 
     # Create the train and validation files
-    train_file = open("data/train.txt", "w")
-    valid_file = open("data/valid.txt", "w")
+    train_file = open("data/custom/train.txt", "w")
+    valid_file = open("data/custom/valid.txt", "w")
 
     tot_len = len(df_yolo)
     split = int(perc/100 * tot_len)

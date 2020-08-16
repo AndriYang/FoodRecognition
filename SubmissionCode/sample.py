@@ -1,20 +1,14 @@
 import os
 import random
-import math
 import argparse
 import pandas as pd
 import numpy as np
 
 import cv2
-from PIL import Image
-from pathlib import Path
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-import xml.etree.ElementTree as ET
 
 import torch
-from torch.utils.data import Dataset, DataLoader
-import torch.optim as optim
+from torch.utils.data import Dataset
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
@@ -85,10 +79,6 @@ def create_corner_rect(bb, color='red'):
     return plt.Rectangle((bb[1], bb[0]), bb[3]-bb[1], bb[2]-bb[0], color=color,
                          fill=False, lw=3)
 
-def show_corner_bb(im, bb):
-    plt.imshow(im)
-    plt.gca().add_patch(create_corner_rect(bb))
-
 """Resizing image and bounding boxes"""
 
 #Reading an image
@@ -113,10 +103,6 @@ def mask_to_bb(Y):
     bottom_row = np.max(rows)
     right_col = np.max(cols)
     return np.array([left_col, top_row, right_col, bottom_row], dtype=np.float32)
-
-def create_bb_array(x):
-    """Generates bounding box array from a train_df row"""
-    return np.array([x[5],x[4],x[7],x[6]])
 
 def resize_image_bb(read_path,write_path,bb,sz):
     """Resize an image and its bounding box and write image to new path"""
@@ -167,7 +153,7 @@ class RoadDataset(Dataset):
         x = np.rollaxis(x, 2)
         return x, y_class, y_bb
 
-def create_corner_rect1(bb,img,label,init_folder, color='red'):
+def create_corner_rect(bb,img,label,init_folder, color='red'):
     print(bb)
     bb = np.array(bb, dtype=np.float32)
     print(bb)
@@ -178,9 +164,9 @@ def create_corner_rect1(bb,img,label,init_folder, color='red'):
     return plt.Rectangle((bb[1], bb[0]), bb[3]-bb[1], bb[2]-bb[0], color=color,
                          fill=False, lw=3)
 
-def show_corner_bb1(im,label, bb, init_folder):
+def show_corner_bb(im,label, bb, init_folder):
     plt.imshow(im)
-    plt.gca().add_patch(create_corner_rect1(bb,im, label, init_folder))
+    plt.gca().add_patch(create_corner_rect(bb,im, label, init_folder))
 
 def main(args):
     
@@ -224,14 +210,10 @@ def main(args):
     print(list(class_dict.keys())[list(class_dict.values()).index(torch.argmax(out_class))])
 
     # predicted bounding box
-    bb_hat = out_bb.detach().cpu().numpy()
-    bb_hat = bb_hat.astype(int)
-    show_corner_bb(im, bb_hat[0])
-
     label = list(class_dict.keys())[list(class_dict.values()).index(torch.argmax(out_class))]
     bb_hat = out_bb.detach().cpu().numpy()
     bb_hat = bb_hat.astype(int)
-    show_corner_bb1(im, label,bb_hat[0], init_folder)
+    show_corner_bb(im, label,bb_hat[0], init_folder)
 
     
 

@@ -1,9 +1,8 @@
 from tkinter import *
 from PIL import Image, ImageTk
-import os, os.path, sys
+import os, os.path
 import random
-import pickle
-import argparse
+import time
 
 from tkinter import filedialog
 
@@ -61,6 +60,8 @@ class Window(Frame):
       
     def predict(self):
         os.system(f'python sample.py --image={self.image_path}')
+
+        time.sleep(10)
         result_image = "./results/predicted.png"
         self.image_path = result_image
         self.setimage(show=True)

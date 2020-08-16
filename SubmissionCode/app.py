@@ -105,6 +105,6 @@ if __name__ == '__main__':
     folder_path = filedialog.askdirectory()
     path = folder_path + '/'
     app = Window(root,path)
-    root.wm_title("Image Captioning")
+    root.wm_title("Food Detection")
     root.geometry("500x5000")
     root.mainloop()

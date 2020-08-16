@@ -260,8 +260,8 @@ if __name__ == '__main__':
     images_dir = Path('./food/images')
     annotation_dir = Path('./food/annotations')
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    # device = 'cpu'
-    epochs = 15
+    epochs = 2
+    batch_size = 64
     test_size = 0.2
     random_state = 42
     lr = 0.001

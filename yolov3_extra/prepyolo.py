@@ -85,10 +85,8 @@ if __name__ == '__main__':
 
     # Generate annotations for each image in darknet format
     for i in range(len(df_yolo)):
-        print(str(df_yolo['filename'][i]))
         file_name = str(df_yolo['filename'][i]).replace(str(images_dir), '').replace('.jpg', '')
         annotation = f"{df_yolo['class'][i]} {df_yolo['x'][i]} {df_yolo['y'][i]} {df_yolo['w'][i]} {df_yolo['h'][i]}"
-        print(file_name)
         text_file = open(f"data/labels/{file_name}.txt", "w")
         n = text_file.write(annotation)
         text_file.close()
